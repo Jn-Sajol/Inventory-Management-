@@ -129,3 +129,33 @@ export const getAttendentFromShop= async (req: Request, res: Response) => {
     });
   }
 };
+
+//get single shop
+export const getSingleShop= async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    const getShop = await prisma.shop.findUnique({
+      where: {
+        id:+id
+      },
+    
+    });
+    if (!getShop) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "No shop found with the given slug.",
+      });
+      return;
+    }
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "attendent are gotten",
+      user: getShop,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
