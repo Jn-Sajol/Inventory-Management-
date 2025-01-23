@@ -25,7 +25,7 @@ export const createShop = async (req: Request, res: Response) => {
       },
     });
     if (checkDuplicate) {
-      throw new Error("already Fjop exist by this slug");
+      throw new Error("already shop exist by this slug");
     }
     //   const normalizedRole = role?.toUpperCase();
     //   console.log("Normalized role:", normalizedRole);
@@ -42,7 +42,7 @@ export const createShop = async (req: Request, res: Response) => {
     // const { password: String, ...others } = newUser;
     res.status(StatusCodes.CREATED).json({
       success: true,
-      message: "User has created",
+      message: "Shop has created",
       user: newUser,
     });
   } catch (error: any) {
@@ -52,3 +52,37 @@ export const createShop = async (req: Request, res: Response) => {
     });
   }
 };
+
+//Get shop
+export const getShopByOrder = async (req: Request, res: Response) => {
+    try {
+      const getShop = await prisma.shop.findMany({
+        // where: {
+        //   id: parseInt(id),
+        // },
+        orderBy: {
+          createAt: "asc",
+        },
+      });
+      if (!getShop || getShop.length < 0) {
+        res.status(StatusCodes.NOT_FOUND).json({
+          success: false,
+          message: "No shop found with the given ID.",
+        });
+        return;
+      }
+    //   const usersWithoutPassword = getUser.map(
+    //     ({ password, ...others }) => others
+    //   );
+      res.status(StatusCodes.CREATED).json({
+        success: true,
+        message: "SHop are got",
+        user: getShop,
+      });
+    } catch (error: any) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: error && error.message ? error.message : "server error",
+      });
+    }
+  };
