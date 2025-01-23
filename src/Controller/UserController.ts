@@ -83,14 +83,16 @@ export const getUserByOrder = async (req: Request, res: Response) => {
         createAt: "desc",
       },
     });
-    if (!getUser || getUser.length <0) {
+    if (!getUser || getUser.length < 0) {
       res.status(StatusCodes.NOT_FOUND).json({
         success: false,
         message: "No user found with the given ID.",
       });
-      return
+      return;
     }
-    const usersWithoutPassword = getUser.map(({ password, ...others }) => others);
+    const usersWithoutPassword = getUser.map(
+      ({ password, ...others }) => others
+    );
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User has created",
@@ -104,11 +106,10 @@ export const getUserByOrder = async (req: Request, res: Response) => {
   }
 };
 
-
 //get single user by id
 export const getUserById = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(id)
+  console.log(id);
   try {
     const getUser = await prisma.user.findUnique({
       where: {
@@ -123,12 +124,57 @@ export const getUserById = async (req: Request, res: Response) => {
         success: false,
         message: "No user found with the given ID.",
       });
-      return
+      return;
     }
-    const { password, ...others } = getUser
+    const { password, ...others } = getUser;
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User has created",
+      user: others,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
+
+//User Update
+
+export const updateUser = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { username, firstname, lastname, phone, dob, gender, image, role } =
+    req.body;
+
+  try {
+    const finduser = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!finduser) {
+      res.send("no user found");
+      return;
+    }
+    const updateUser = await prisma.user.update({
+      where: { id: Number(id) },
+      data: {
+        username,
+        firstname,
+        lastname,
+        phone,
+        dob,
+        gender,
+        image,
+        role,
+      },
+    });
+
+    const { password: String, ...others } = updateUser;
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "User has Updated",
       user: others,
     });
   } catch (error: any) {
