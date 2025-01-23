@@ -18,26 +18,36 @@ enum Role {
   ADMIN
   ATTENDENT
 }
+
 enum Gender {
   MALE
   FEMALE
 }
+
 model User {
-  id Int @default(autoincrement()) @unique
-  username String @unique
-  email String @unique
-  password String
+  id        Int      @unique @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
   firstname String
-  lastname String
-  phone Int @unique
-  dob DateTime
-  gender Gender 
-  image String?
-  role Role @default(ATTENDENT)
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  lastname  String
+  phone     Int      @unique
+  dob       DateTime
+  gender    Gender
+  image     String?
+  role      Role     @default(ATTENDENT)
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  shop      Shop[]
 }
 
-// model Shop {
-
-// }
+model Shop {
+  id       Int      @unique @default(autoincrement())
+  name     String
+  slug     Int      @unique
+  location String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  adminId  Int
+  admin    User     @relation(fields: [adminId], references: [id])
+}
