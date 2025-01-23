@@ -1,9 +1,10 @@
 
 import express from "express";
-import { getUserByIdAndOrder, userRegistration } from "../Controller/UserController";
+import {  getUserById, getUserByOrder, userRegistration } from "../Controller/UserController";
 const userRouter = express.Router();
 
 userRouter.post('/register', userRegistration)
-userRouter.get('/getuser', getUserByIdAndOrder)
+userRouter.get('/getusers', getUserByOrder)
+userRouter.get('/getuserbyid/:id', getUserById)
 
 export default userRouter;

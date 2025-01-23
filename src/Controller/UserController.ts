@@ -72,7 +72,7 @@ export const userRegistration = async (req: Request, res: Response) => {
 
 // get user by id and order
 
-export const getUserByIdAndOrder = async (req: Request, res: Response) => {
+export const getUserByOrder = async (req: Request, res: Response) => {
   const id = req.params.id;
   try {
     const getUser = await prisma.user.findMany({
@@ -95,6 +95,41 @@ export const getUserByIdAndOrder = async (req: Request, res: Response) => {
       success: true,
       message: "User has created",
       user: usersWithoutPassword,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
+
+
+//get single user by id
+export const getUserById = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  console.log(id)
+  try {
+    const getUser = await prisma.user.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+      // orderBy: {
+      //   createAt: "desc",
+      // },
+    });
+    if (!getUser) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "No user found with the given ID.",
+      });
+      return
+    }
+    const { password, ...others } = getUser
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "User has created",
+      user: others,
     });
   } catch (error: any) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
