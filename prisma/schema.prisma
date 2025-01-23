@@ -14,7 +14,30 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User {
-  name String @unique
-  id Int @default(autoincrement())
+enum Role {
+  ADMIN
+  ATTENDENT
 }
+enum Gender {
+  MALE
+  FEMALE
+}
+model User {
+  id Int @default(autoincrement()) @unique
+  username String @unique
+  email String @unique
+  password String
+  firstname String
+  lastname String
+  phone Int @unique
+  dob DateTime
+  gender Gender 
+  image String?
+  role Role @default(ATTENDENT)
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
+
+// model Shop {
+
+// }

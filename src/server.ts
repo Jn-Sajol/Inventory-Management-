@@ -1,12 +1,19 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
+import userRouter from "./Routes/userRoute";
+import bodyParser from "body-parser";
 
 const app = express();
-const port: number = 3000;
+const port: number = 5000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+app.use("/api/user", userRouter);
+
+app.use("/", (req, res) => {
+  res.send("this is home ");
 });
-
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
