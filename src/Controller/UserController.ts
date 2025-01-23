@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { prisma } from "../Db/db.config";
 import { hashSync } from "bcrypt";
 
+//user Registration
 export const userRegistration = async (req: Request, res: Response) => {
   const {
     username,
@@ -176,6 +177,77 @@ export const updateUser = async (req: Request, res: Response) => {
       success: true,
       message: "User has Updated",
       user: others,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
+
+//Update users password
+export const updateUserPassword = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { password } = req.body;
+
+  try {
+    const finduser = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!finduser) {
+      res.send("no user found");
+      return;
+    }
+    const updateUser = await prisma.user.update({
+      where: { id: Number(id) },
+      data: {
+        password:hashSync(password,10)
+      },
+    });
+
+    const { password: String, ...others } = updateUser;
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "User has Updated",
+      user: others,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
+
+//deleteUser
+export const deleteUser = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  try {
+    const finduser = await prisma.user.findUnique({
+      where: {
+        id: Number(id),
+      },
+    });
+    if (!finduser) {
+      res.send("no user found");
+      return;
+    }
+    const updateUser = await prisma.user.delete({
+      where: { id: Number(id) },
+    });
+    if(updateUser == null){
+      res.send('user not deleted')
+      return
+    }
+    // const { password: String, ...others } = updateUser;
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "User has deleted",
+      // user: others,
     });
   } catch (error: any) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
