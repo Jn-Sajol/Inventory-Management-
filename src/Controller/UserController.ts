@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { prisma } from "../Db/db.config";
 import { hashSync } from "bcrypt";
+import { Role } from "@prisma/client";
+// import { Role } from "@prisma/client";
 
 //user Registration
 export const userRegistration = async (req: Request, res: Response) => {
@@ -97,6 +99,38 @@ export const getUserByOrder = async (req: Request, res: Response) => {
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User has created",
+      user: usersWithoutPassword,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
+
+//Get Attendent by role
+export const getAttendentByRole = async (req: Request, res: Response) => {
+  try {
+    const getUser = await prisma.user.findMany({
+      where:{
+        role:"ATTENDENT"
+      }
+    });
+    if (!getUser || getUser.length === 0) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "No user found with the given role.",
+      });
+      return;
+    }
+    const usersWithoutPassword = getUser.map(
+      ({ password, ...others }) => others
+    );
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "Attendent are bellow",
+      count:userRegistration.length+1,
       user: usersWithoutPassword,
     });
   } catch (error: any) {
