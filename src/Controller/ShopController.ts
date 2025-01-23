@@ -86,3 +86,46 @@ export const getShopByOrder = async (req: Request, res: Response) => {
       });
     }
   };
+
+//get attendent from the shop
+export const getAttendentFromShop= async (req: Request, res: Response) => {
+  const slug = req.params.slug;
+  try {
+    const getShop = await prisma.shop.findUnique({
+      where: {
+        slug
+      },
+    
+    });
+    if (!getShop) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "No shop found with the given slug.",
+      });
+      return;
+    }
+  const attendent = await prisma.user.findMany({
+    where:{
+      id:{
+        in:getShop.attendentId
+      }
+    },
+    select:{
+      id:true,
+      role:true,
+      username:true,
+      gender:true
+    }
+  })
+    res.status(StatusCodes.CREATED).json({
+      success: true,
+      message: "attendent are gotten",
+      user: attendent,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};

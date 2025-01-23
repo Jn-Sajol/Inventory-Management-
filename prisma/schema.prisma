@@ -42,13 +42,13 @@ model User {
 }
 
 model Shop {
-  id       Int      @unique @default(autoincrement())
-  name     String
-  slug     String      @unique
-  location String
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  adminId  Int
-  admin    User     @relation(fields: [adminId], references: [id])
-  attendentId String
+  id          Int      @unique @default(autoincrement())
+  name        String
+  slug        String   @unique
+  location    String
+  createAt    DateTime @default(now())
+  updateAt    DateTime @updatedAt
+  adminId     Int
+  admin       User     @relation(fields: [adminId], references: [id])
+  attendentId Int[]
 }
