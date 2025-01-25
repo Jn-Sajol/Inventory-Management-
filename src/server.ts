@@ -5,6 +5,8 @@ import shopRouter from "./Routes/shopRoute";
 import customerRouter from "./Routes/customerRoute";
 import supplierRouter from "./Routes/supplierRoute";
 import unitRouter from "./Routes/unitRoute";
+import brandRouter from "./Routes/brandRoute";
+import categoryRouter from "./Routes/categoryRoute";
 
 const app = express();
 const port: number = 5000;
@@ -18,6 +20,8 @@ app.use("/api/shop", shopRouter);
 app.use("/api/customer", customerRouter);
 app.use("/api/supplier", supplierRouter);
 app.use("/api/unit", unitRouter);
+app.use("/api/brand", brandRouter);
+app.use("/api/category", categoryRouter);
 
 app.use("/", (req, res) => {
   res.send("this is home ");
