@@ -114,7 +114,6 @@ model Unit {
   name         String
   abbreviation String
   slug         String    @unique
-  product      String
   createAt     DateTime  @default(now())
   updateAt     DateTime  @updatedAt
   Product      Product[]
@@ -124,7 +123,6 @@ model Brand {
   id       Int       @unique @default(autoincrement())
   name     String
   slug     String    @unique
-  product  String
   createAt DateTime  @default(now())
   updateAt DateTime  @updatedAt
   Product  Product[]
@@ -134,7 +132,6 @@ model Category {
   id       Int       @unique @default(autoincrement())
   name     String
   slug     String    @unique
-  product  String
   createAt DateTime  @default(now())
   updateAt DateTime  @updatedAt
   Product  Product[]
