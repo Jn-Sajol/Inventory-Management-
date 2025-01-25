@@ -7,6 +7,7 @@ import supplierRouter from "./Routes/supplierRoute";
 import unitRouter from "./Routes/unitRoute";
 import brandRouter from "./Routes/brandRoute";
 import categoryRouter from "./Routes/categoryRoute";
+import productRouter from "./Routes/productRoute";
 
 const app = express();
 const port: number = 5000;
@@ -22,6 +23,7 @@ app.use("/api/supplier", supplierRouter);
 app.use("/api/unit", unitRouter);
 app.use("/api/brand", brandRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/product", productRouter);
 
 app.use("/", (req, res) => {
   res.send("this is home ");
