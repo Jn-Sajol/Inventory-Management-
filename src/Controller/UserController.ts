@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { prisma } from "../Db/db.config";
-import { hashSync } from "bcrypt";
+import { compare, hashSync } from "bcrypt";
 import { Role } from "@prisma/client";
+import jwt from "jsonwebtoken";
 // import { Role } from "@prisma/client";
 
 //user Registration
@@ -73,8 +74,50 @@ export const userRegistration = async (req: Request, res: Response) => {
   }
 };
 
-// get user by id and order
+//User Login
+export const userLogin = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    if (!email && !password) {
+      throw new Error("email and name is required");
+    }
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
 
+    if (!user) {
+      throw new Error("User not Found");
+    }
+
+    const valid = await compare(password, user.password);
+    if (!valid) {
+      throw new Error("Invalid Credential");
+    }
+
+    const token = jwt.sign({ id: user.id }, "secretkey", {
+      expiresIn: "24h",
+    });
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: "User Login Successfully",
+      user: {
+        id: user.id,
+        name: user.username,
+        email: user.email,
+      },
+      token: token,
+    });
+  } catch (error: any) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: error && error.message ? error.message : "server error",
+    });
+  }
+};
+
+// get user by id and order
 export const getUserByOrder = async (req: Request, res: Response) => {
   const id = req.params.id;
   try {

@@ -1,9 +1,10 @@
 
 import express from "express";
-import {  deleteUser, getAttendentByRole, getUserById, getUserByOrder, updateUser, updateUserPassword, userRegistration } from "../Controller/UserController";
+import {  deleteUser, getAttendentByRole, getUserById, getUserByOrder, updateUser, updateUserPassword, userLogin, userRegistration } from "../Controller/UserController";
 const userRouter = express.Router();
 
 userRouter.post('/register', userRegistration)
+userRouter.post('/login', userLogin)
 userRouter.get('/getusers', getUserByOrder)
 userRouter.get('/getattendent', getAttendentByRole)
 userRouter.get('/getuserbyid/:id', getUserById)
