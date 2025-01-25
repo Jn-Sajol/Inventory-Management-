@@ -87,26 +87,81 @@ model Customer {
 }
 
 model Supplier {
-  id                  Int      @unique @default(autoincrement())
-  supplierType        SupplierType
-  name                String
-  contactPerson       String
-  phone               String      @unique
-  email               String?     @unique
-  location            String?
-  country             String?
-  website             String?
-  taxPin              String?     @unique
-  registrationNumber  String?     @unique
-  bankAccountNumber   String?
-  bankName            String?
-  paymentTerms        String?
-  logo                String     
-  rating              Float?
-  notes               String?
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt
+  id                 Int          @unique @default(autoincrement())
+  supplierType       SupplierType
+  name               String
+  contactPerson      String
+  phone              String       @unique
+  email              String?      @unique
+  location           String?
+  country            String?
+  website            String?
+  taxPin             String?      @unique
+  registrationNumber String?      @unique
+  bankAccountNumber  String?
+  bankName           String?
+  paymentTerms       String?
+  logo               String
+  rating             Float?
+  notes              String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  Product            Product[]
 }
 
+model Unit {
+  id           Int       @unique @default(autoincrement())
+  name         String
+  abbreviation String
+  slug         String    @unique
+  product      String
+  createAt     DateTime  @default(now())
+  updateAt     DateTime  @updatedAt
+  Product      Product[]
+}
 
+model Brand {
+  id       Int       @unique @default(autoincrement())
+  name     String
+  slug     String    @unique
+  product  String
+  createAt DateTime  @default(now())
+  updateAt DateTime  @updatedAt
+  Product  Product[]
+}
 
+model Category {
+  id       Int       @unique @default(autoincrement())
+  name     String
+  slug     String    @unique
+  product  String
+  createAt DateTime  @default(now())
+  updateAt DateTime  @updatedAt
+  Product  Product[]
+}
+
+model Product {
+  id                 Int      @unique @default(autoincrement())
+  name               String
+  description        String?
+  productBatchNumber Int?
+  image              String?
+  sku                String   @unique
+  productCode        String   @unique
+  alertQuantity      Int
+  stockQuantity      Int
+  productBarcode     Int?
+  price              Int
+  slug               String @unique
+  expiredate         DateTime
+  supplierId         Int
+  unitId             Int
+  brandId            Int
+  categoryId         Int
+  unit               Unit     @relation(fields: [unitId], references: [id])
+  brand              Brand    @relation(fields: [brandId], references: [id])
+  category           Category @relation(fields: [categoryId], references: [id])
+  supplier           Supplier @relation(fields: [supplierId], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
