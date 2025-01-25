@@ -24,6 +24,13 @@ enum Gender {
   FEMALE
 }
 
+enum CustomerType {
+  RETAIL
+  WHOLESALE
+  DISTRIBUTOR
+  OTHER
+}
+
 model User {
   id        Int      @unique @default(autoincrement())
   username  String   @unique
@@ -51,4 +58,22 @@ model Shop {
   adminId     Int
   admin       User     @relation(fields: [adminId], references: [id])
   attendentId Int[]
+}
+
+model Customer {
+  id             Int          @unique @default(autoincrement())
+  customerType   CustomerType
+  email          String       @unique
+  firstname      String
+  lastname       String
+  phone          Int          @unique
+  gender         Gender
+  maxCreditLimit Float
+  maxCreditDays  Int
+  taxPin         Int?
+  nid            String       @unique
+  country        String
+  location       String
+  createAt       DateTime     @default(now())
+  updateAt       DateTime     @updatedAt
 }
