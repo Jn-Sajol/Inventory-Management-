@@ -38,3 +38,14 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction):
     return 
   }
 };
+
+//Check admin auth
+export const isAdminAuth = async (req: Request, res: Response, next: NextFunction) => {
+  
+    if (req.user?.role !== 'ADMIN') {  
+     res.send('you are not a admin')
+     return
+    }
+  
+    next();
+  };
