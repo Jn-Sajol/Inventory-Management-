@@ -1,0 +1,11 @@
+ // Import User model type
+
+import { User } from "@prisma/client";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: User
+    }
+  }
+}
