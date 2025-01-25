@@ -31,6 +31,14 @@ enum CustomerType {
   OTHER
 }
 
+enum SupplierType {
+  MANUFACTURER
+  DISTRIBUTOR
+  WHOLESALER
+  RETAILER
+  OTHER
+}
+
 model User {
   id        Int      @unique @default(autoincrement())
   username  String   @unique
@@ -77,3 +85,28 @@ model Customer {
   createAt       DateTime     @default(now())
   updateAt       DateTime     @updatedAt
 }
+
+model Supplier {
+  id                  Int      @unique @default(autoincrement())
+  supplierType        SupplierType
+  name                String
+  contactPerson       String
+  phone               String      @unique
+  email               String?     @unique
+  location            String?
+  country             String?
+  website             String?
+  taxPin              String?     @unique
+  registrationNumber  String?     @unique
+  bankAccountNumber   String?
+  bankName            String?
+  paymentTerms        String?
+  logo                String     
+  rating              Float?
+  notes               String?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+}
+
+
+
