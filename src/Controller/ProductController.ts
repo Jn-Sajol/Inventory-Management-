@@ -58,12 +58,12 @@ export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: "asc" },
-    //   include: {
-    //     unit: true,
-    //     brand: true,
-    //     category: true,
-    //     supplier: true,
-    //   }
+      include: {
+        unit: true,
+        brand: true,
+        category: true,
+        supplier: true,
+      }
     });
 
     res.status(StatusCodes.OK).json({
