@@ -4,18 +4,54 @@ import { prisma } from "../Db/db.config";
 
 // Create Product
 export const createProduct = async (req: Request, res: Response) => {
-  const { name, description, productBatchNumber, image, sku, productCode, alertQuantity, stockQuantity, productBarcode, price, slug, expiredate, supplierId, unitId, brandId, categoryId } = req.body;
+  const {
+    name,
+    description,
+    productBatchNumber,
+    image,
+    sku,
+    productCode,
+    alertQuantity,
+    stockQuantity,
+    productBarcode,
+    price,
+    slug,
+    expiredate,
+    supplierId,
+    unitId,
+    brandId,
+    categoryId,
+    wholesalePrice,
+    shopId,
+  } = req.body;
 
   try {
-    if (!name || !sku || !productCode || !slug || !expiredate || !supplierId || !unitId || !brandId || !categoryId || !price) {
+    if (
+      !name ||
+      !sku ||
+      !productCode ||
+      !slug ||
+      !expiredate ||
+      !supplierId ||
+      !unitId ||
+      !brandId ||
+      !categoryId ||
+      !price
+    ) {
       throw new Error("Required fields are missing.");
     }
 
-    const checkDuplicateSku = await prisma.product.findFirst({ where: { sku } });
-    const checkDuplicateProductCode = await prisma.product.findFirst({ where: { productCode } });
+    const checkDuplicateSku = await prisma.product.findFirst({
+      where: { sku },
+    });
+    const checkDuplicateProductCode = await prisma.product.findFirst({
+      where: { productCode },
+    });
 
     if (checkDuplicateSku || checkDuplicateProductCode) {
-      res.status(StatusCodes.BAD_REQUEST).send("Product with the same SKU or Product Code already exists.");
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .send("Product with the same SKU or Product Code already exists.");
       return;
     }
 
@@ -36,7 +72,9 @@ export const createProduct = async (req: Request, res: Response) => {
         supplierId,
         unitId,
         brandId,
-        categoryId
+        categoryId,
+        wholesalePrice,
+        shopId,
       },
     });
 
@@ -58,12 +96,12 @@ export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: "asc" },
-      include: {
-        unit: true,
-        brand: true,
-        category: true,
-        supplier: true,
-      }
+      // include: {
+      //   unit: true,
+      //   brand: true,
+      //   category: true,
+      //   supplier: true,
+      // }
     });
 
     res.status(StatusCodes.OK).json({
@@ -85,12 +123,12 @@ export const getProductById = async (req: Request, res: Response) => {
   try {
     const product = await prisma.product.findUnique({
       where: { id: Number(id) },
-    //   include: {
-    //     unit: true,
-    //     brand: true,
-    //     category: true,
-    //     supplier: true,
-    //   },
+      //   include: {
+      //     unit: true,
+      //     brand: true,
+      //     category: true,
+      //     supplier: true,
+      //   },
     });
 
     if (!product) {
@@ -116,7 +154,26 @@ export const getProductById = async (req: Request, res: Response) => {
 // Update Product
 export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, description, productBatchNumber, image, sku, productCode, alertQuantity, stockQuantity, productBarcode, price, slug, expiredate, supplierId, unitId, brandId, categoryId } = req.body;
+  const {
+    name,
+    description,
+    productBatchNumber,
+    image,
+    sku,
+    productCode,
+    alertQuantity,
+    stockQuantity,
+    productBarcode,
+    price,
+    slug,
+    expiredate,
+    supplierId,
+    unitId,
+    brandId,
+    categoryId,
+    wholesalePrice,
+    shopId,
+  } = req.body;
 
   try {
     const product = await prisma.product.findUnique({
@@ -150,6 +207,8 @@ export const updateProduct = async (req: Request, res: Response) => {
         unitId,
         brandId,
         categoryId,
+        wholesalePrice,
+        shopId,
       },
     });
 

@@ -39,6 +39,11 @@ enum SupplierType {
   OTHER
 }
 
+enum PaymentStatus {
+  PAID
+  CREDIT
+}
+
 model User {
   id        Int      @unique @default(autoincrement())
   username  String   @unique
@@ -57,33 +62,37 @@ model User {
 }
 
 model Shop {
-  id          Int      @unique @default(autoincrement())
+  id          Int       @unique @default(autoincrement())
   name        String
-  slug        String   @unique
+  slug        String    @unique
   location    String
-  createAt    DateTime @default(now())
-  updateAt    DateTime @updatedAt
+  createAt    DateTime  @default(now())
+  updateAt    DateTime  @updatedAt
   adminId     Int
-  admin       User     @relation(fields: [adminId], references: [id])
+  admin       User      @relation(fields: [adminId], references: [id])
   attendentId Int[]
+  poduct      Product[]
 }
 
 model Customer {
-  id             Int          @unique @default(autoincrement())
-  customerType   CustomerType
-  email          String       @unique
-  firstname      String
-  lastname       String
-  phone          Int          @unique
-  gender         Gender
-  maxCreditLimit Float
-  maxCreditDays  Int
-  taxPin         Int?
-  nid            String       @unique
-  country        String
-  location       String
-  createAt       DateTime     @default(now())
-  updateAt       DateTime     @updatedAt
+  id                  Int          @unique @default(autoincrement())
+  customerType        CustomerType
+  email               String       @unique
+  firstname           String
+  lastname            String
+  phone               Int          @unique
+  gender              Gender
+  maxCreditLimit      Float
+  maxCreditDays       Int
+  unpaidCurrentAmount Int?         @default(0)
+  taxPin              Int?
+  nid                 String       @unique
+  country             String
+  location            String
+  createAt            DateTime     @default(now())
+  updateAt            DateTime     @updatedAt
+  //relation
+  sale                Sale[]
 }
 
 model Supplier {
@@ -138,27 +147,85 @@ model Category {
 }
 
 model Product {
-  id                 Int      @unique @default(autoincrement())
+  id                 Int        @unique @default(autoincrement())
   name               String
   description        String?
   productBatchNumber Int?
   image              String?
-  sku                String   @unique
-  productCode        String   @unique
+  sku                String     @unique
+  productCode        String     @unique
   alertQuantity      Int
   stockQuantity      Int
   productBarcode     Int?
   price              Int
-  slug               String @unique
+  wholesalePrice     Int        @default(0)
+  slug               String     @unique
   expiredate         DateTime
   supplierId         Int
   unitId             Int
   brandId            Int
   categoryId         Int
-  unit               Unit     @relation(fields: [unitId], references: [id])
-  brand              Brand    @relation(fields: [brandId], references: [id])
-  category           Category @relation(fields: [categoryId], references: [id])
-  supplier           Supplier @relation(fields: [supplierId], references: [id])
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  shopId             Int        @default(1)
+  shop               Shop       @relation(fields: [shopId], references: [id])
+  unit               Unit       @relation(fields: [unitId], references: [id])
+  brand              Brand      @relation(fields: [brandId], references: [id])
+  category           Category   @relation(fields: [categoryId], references: [id])
+  supplier           Supplier   @relation(fields: [supplierId], references: [id])
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  Saleitem           SaleItem[]
 }
+
+model Sale {
+  id              Int           @unique @default(autoincrement())
+  customerId      Int
+  customerName    String
+  saleNumber     Int        @unique
+  customerEmail   String?
+  saleAmount     Int?
+  balanceAmount   Int           @default(0)
+  paidAmount      Int
+  orderType       String?
+  paymentStatus   PaymentStatus @default(PAID)
+  paymentMethod   String
+  transactionCode String?
+
+  // Relationships
+  // orderItems       OrderItem[]
+  saleItem     SaleItem[]
+  customer  Customer   @relation(fields: [customerId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model SaleItem {
+  id            Int      @unique @default(autoincrement())
+  saleId       Int
+  productId     Int
+  qty           Int
+  productPrice     Float
+  productName   String
+  productImage  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  product Product @relation(fields: [productId], references: [id])
+  sale    Sale    @relation(fields: [saleId], references: [id])
+}
+
+// model OrderItem {
+//   id               Int @default(autoincrement()) @unique
+//   productId        Int
+//   orderId          Int
+//   name             String
+//   price            Float
+//   qty              Int
+//   productThumbnail String
+//   createdAt        DateTime @default(now())
+//   updatedAt        DateTime @updatedAt
+
+//   // Relationships
+//   product Product @relation(fields: [productId], references: [id])
+//   order   Order   @relation(fields: [orderId], references: [id])
+// }
