@@ -185,8 +185,8 @@ model Sale {
   saleAmount     Int?
   balanceAmount   Int           @default(0)
   paidAmount      Int
-  orderType       String?
-  paymentStatus   PaymentStatus @default(PAID)
+  saleType       String?
+  paymentStatus   String
   paymentMethod   String
   transactionCode String?
 
