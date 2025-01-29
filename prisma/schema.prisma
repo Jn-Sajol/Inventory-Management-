@@ -214,18 +214,18 @@ model SaleItem {
   sale    Sale    @relation(fields: [saleId], references: [id])
 }
 
-// model OrderItem {
-//   id               Int @default(autoincrement()) @unique
-//   productId        Int
-//   orderId          Int
-//   name             String
-//   price            Float
-//   qty              Int
-//   productThumbnail String
-//   createdAt        DateTime @default(now())
-//   updatedAt        DateTime @updatedAt
+model OrderItem {
+  id               Int @default(autoincrement()) @unique
+  productId        Int
+  orderId          Int
+  name             String
+  price            Float
+  qty              Int
+  productThumbnail String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-//   // Relationships
-//   product Product @relation(fields: [productId], references: [id])
-//   order   Order   @relation(fields: [orderId], references: [id])
-// }
+  // Relationships
+  product Product @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+}
