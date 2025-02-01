@@ -12,7 +12,8 @@ interface SaleRequest {
   saleType: string; // e.g., "online" or "in-store", depending on your logic
   paymentStatus: string; // e.g., "paid", "unpaid", "partial"
   paymentMethod: string; // e.g., "credit card", "cash", "bank transfer"
-  transactionCode: string; // Can be `null` or a string for the transaction code
+  transactionCode: string;
+  shopId:number // Can be `null` or a string for the transaction code
   saleItem: SaleItems[]; // Assuming this refers to an array of SaleItems
 }
 
@@ -39,9 +40,23 @@ export const createSale = async (req: Request, res: Response) => {
     paymentMethod,
     transactionCode,
     saleItem,
+    shopId
   }: SaleRequest = req.body as SaleRequest;
   try {
     const saleId = await prisma.$transaction(async (transaction) => {
+      //if the balance amount >0 check the condition
+      if(balanceAmount>0){
+        const updateCustomer = await transaction.customer.update({
+          where:{
+            id:customerId
+          },
+          data:{
+            unpaidCurrentAmount:{
+              increment:balanceAmount
+            }
+          }
+        })
+      }
       // Create the Line Order
       const sale = await transaction.sale.create({
         data: {
@@ -57,6 +72,7 @@ export const createSale = async (req: Request, res: Response) => {
           paymentStatus,
           paidAmount,
           transactionCode,
+          shopId
         },
       });
 

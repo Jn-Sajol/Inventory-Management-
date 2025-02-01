@@ -72,6 +72,7 @@ model Shop {
   admin       User      @relation(fields: [adminId], references: [id])
   attendentId Int[]
   poduct      Product[]
+  sale        Sale[]
 }
 
 model Customer {
@@ -177,55 +178,57 @@ model Product {
 }
 
 model Sale {
-  id              Int           @unique @default(autoincrement())
+  id              Int     @unique @default(autoincrement())
   customerId      Int
   customerName    String
-  saleNumber     Int        @unique
+  saleNumber      Int     @unique
   customerEmail   String?
-  saleAmount     Int?
-  balanceAmount   Int           @default(0)
+  saleAmount      Int?
+  balanceAmount   Int     @default(0)
   paidAmount      Int
-  saleType       String?
+  saleType        String?
   paymentStatus   String
   paymentMethod   String
   transactionCode String?
 
   // Relationships
   // orderItems       OrderItem[]
-  saleItem     SaleItem[]
+  saleItem  SaleItem[]
   customer  Customer   @relation(fields: [customerId], references: [id])
+  shopId    Int
+  shop      Shop       @relation(fields: [shopId], references: [id])
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
 
 model SaleItem {
-  id            Int      @unique @default(autoincrement())
+  id           Int      @unique @default(autoincrement())
   saleId       Int
-  productId     Int
-  qty           Int
-  productPrice     Float
-  productName   String
-  productImage  String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  productId    Int
+  qty          Int
+  productPrice Float
+  productName  String
+  productImage String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relationships
   product Product @relation(fields: [productId], references: [id])
   sale    Sale    @relation(fields: [saleId], references: [id])
 }
 
-model OrderItem {
-  id               Int @default(autoincrement()) @unique
-  productId        Int
-  orderId          Int
-  name             String
-  price            Float
-  qty              Int
-  productThumbnail String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+// model OrderItem {
+//   id               Int @default(autoincrement()) @unique
+//   productId        Int
+//   orderId          Int
+//   name             String
+//   price            Float
+//   qty              Int
+//   productThumbnail String
+//   createdAt        DateTime @default(now())
+//   updatedAt        DateTime @updatedAt
 
-  // Relationships
-  product Product @relation(fields: [productId], references: [id])
-  order   Order   @relation(fields: [orderId], references: [id])
-}
+//   // Relationships
+//   product Product @relation(fields: [productId], references: [id])
+//   order   Order   @relation(fields: [orderId], references: [id])
+// }
