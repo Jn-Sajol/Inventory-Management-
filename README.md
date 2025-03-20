@@ -9,6 +9,7 @@ The Inventory Management System Backend API is a robust and scalable solution de
 📊 Reporting Ready: Supports data retrieval for reports like stock status, low inventory alerts, and product movement.
 🔐 Secure API: Authentication and authorization in place to protect sensitive operations.
 ⚡ Performance Optimized: Efficient querying and data handling for high-performance operations.
+
 🏗 Tech Stack
 Backend Framework: Node.js with Express (or your framework of choice)
 Database: PostgreSQL / MongoDB / MySQL (whichever you used)
